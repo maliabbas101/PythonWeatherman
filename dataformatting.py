@@ -1,33 +1,37 @@
+"""
+This module formats the data.
+"""
 
-
-# def read_text_file(file_path):
-#     arrayDate, arrayTemp = [], []
-#     with open(file_path, 'r') as f:
-#         lines = f.readlines()
-#         print(lines)
-#         for line in range(1, len(lines)):
-#             array = (lines[line].split(','))
-#             if array[1] == '':
-#                 continue
-#             arrayDate.append(array[0])
-#             arrayTemp.append(int(array[1]))
-#     return arrayTemp
 
 def read_text_file(file_path):
+    """
+    Reads the file from the given path.
+    """
 
     array = []
-    with open(file_path, 'r') as f:
+    with open(file_path, 'r', encoding="utf-8") as f:
         lines = f.readlines()
         attributes = lines[0].split(',')
-        for line in range(1, len(lines)):
-            array.append((lines[line].split(',')))
+        for line in lines:
+            if lines.index(line) % 23 == 0:
+                continue
+            array.append((line.split(',')))
     return attributes, array
 
 
 def merge_files(files):
-
-    with open("output_file.txt", "w") as outfile:
+    """
+    Merges multiple files into one file.
+    """
+    with open("output_file.txt", "w", encoding="utf-8") as outfile:
         for filename in files:
-            with open(filename) as infile:
+            with open(filename, encoding="utf-8") as infile:
                 contents = infile.read()
                 outfile.write(contents)
+
+
+def zone(attributes):
+    """
+    This returns PKT or GST
+    """
+    return attributes[0]

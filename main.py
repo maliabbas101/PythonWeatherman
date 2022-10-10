@@ -1,12 +1,12 @@
 import sys
 import os
-# import calendar
+from colorama import Fore
 import dataformatting
 import calculations
-import output
+import chart
 
 
-def number_to_string(argument):
+def main(argument):
     '''
     This function performs actions on base of the command line arguments.
     '''
@@ -19,25 +19,32 @@ def number_to_string(argument):
                 if sys.argv[2] in file:
                     files.append(file)
             dataformatting.merge_files(files)
+            attributes, array = dataformatting.read_text_file(
+                'output_file.txt')
+            func(attributes, array)
 
-            # array_date, array_temp = yearly.read_text_file(
-            #     file)
-            # yearly.calculate_max(array_date, array_temp)
-            return "Yearly"
         case '-a':
-            # current_month_name = calendar.month_name[int(
-            # sys.argv[2].split('/')[1])]
             attributes, array = dataformatting.read_text_file(sys.argv[3])
-            max_temp, min_temp, avg_humidity = calculations.calculate(
-                attributes, array)
-            output.printing_monthly_data(
-                max_temp, min_temp, avg_humidity)
-            return "Monthly"
+            func(attributes, array)
+
         case '-c':
-            return "Chart"
+            attributes, array = dataformatting.read_text_file(sys.argv[3])
+            max_array, min_array, humid_array, date_array = calculations.information(
+                attributes, array)
+            chart.bar_chart(max_array, min_array, date_array)
+            chart.one_bar_chart(max_array, min_array, date_array)
         case _:
+            print(Fore.RED + 'Please pass valid arguments.')
 
-            return "Not a valid argument passed."
+
+def func(attributes, array):
+    """
+    This is to ensure DRY code.
+    """
+    max_array, min_array, humid_array, date_array = calculations.information(
+        attributes, array)
+    calculations.calculate(max_array, min_array,
+                           humid_array, date_array)
 
 
-print(number_to_string(sys.argv[1]))
+main(sys.argv[1])
